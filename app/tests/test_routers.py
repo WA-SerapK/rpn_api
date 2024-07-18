@@ -97,3 +97,27 @@ def test_failed_delete_nonexistent_stack(client):
     assert response.status_code == 404
     data = response.get_json()
     assert data['message'] == 'Stack not found'
+
+
+def test_success_apply_addition(client):
+    response = client.post('/rpn/stack')
+    stack_id = response.get_json()['stack_id']
+    client.post(f'/rpn/stack/{stack_id}', json={'value': 3})
+    client.post(f'/rpn/stack/{stack_id}', json={'value': 4})
+
+    response = client.post(f'/rpn/op/add/stack/{stack_id}')
+    assert response.status_code == 200
+    result = response.get_json()
+    assert result == [7]
+
+
+def test_failed_apply_division_by_zero(client):
+    response = client.post('/rpn/stack')
+    stack_id = response.get_json()['stack_id']
+    client.post(f'/rpn/stack/{stack_id}', json={'value': 3})
+    client.post(f'/rpn/stack/{stack_id}', json={'value': 0})
+
+    response = client.post(f'/rpn/op/div/stack/{stack_id}')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert data['message'] == 'Division by zero'

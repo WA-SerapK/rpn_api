@@ -3,6 +3,8 @@ from flask import jsonify, request, make_response
 from flask_restx import Namespace, Resource
 
 from app.models.models import value_model
+from app.lib.compute import compute
+
 
 ns = Namespace('rpn', description='RPN operations')
 
@@ -70,4 +72,28 @@ class StackStackId(Resource):
         del rpn_stacks[stack_id]
 
         return make_response(jsonify({'message': 'Stack deleted'}), 200)
+
+
+@ns.route('/op/<op>/stack/<stack_id>')
+class ApplyOperand(Resource):
+    """Apply an operand"""
+    def post(self, op, stack_id):
+        """Apply an operand to a stack"""
+        if stack_id not in rpn_stacks:
+            return make_response(jsonify({'message': 'Stack not found'}), 404)
+        if op not in operand.values():
+            return make_response(jsonify({'message': 'Operand not found'}), 404)
+        stack = rpn_stacks[stack_id]
+        if len(stack) < 2:
+            return make_response(jsonify({'message': 'Not enough values in stack'}), 400)
+
+        b = stack.pop()
+        a = stack.pop()
+        try:
+            result = compute(op, a, b)
+        except AssertionError as e:
+            return make_response(jsonify({'message': str(e)}), 400)
+
+        stack.append(result)
+        return make_response(jsonify(stack), 200)
 
