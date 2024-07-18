@@ -6,6 +6,13 @@ from flask_restx import Namespace, Resource
 ns = Namespace('rpn', description='RPN operations')
 
 rpn_stacks = {}
+operand = {
+    "addition": "add",
+    "subtraction": "sub",
+    "multiplication": "mul",
+    "division": "div"
+}
+
 
 @ns.route('/stack')
 class Stack(Resource):
@@ -22,6 +29,12 @@ class Stack(Resource):
         return jsonify(rpn_stacks)
 
 
+@ns.route('/op')
+class Operand(Resource):
+    """Retrieve list operand."""
+    def get(self):
+        """List all the operand."""
+        return jsonify(operand)
 
 
 
