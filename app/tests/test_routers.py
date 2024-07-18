@@ -1,7 +1,4 @@
 """Unit tests for app."""
-import uuid
-
-import pytest
 from api import app, api
 from app.routers.routers import ns, rpn_stacks, operand
 
