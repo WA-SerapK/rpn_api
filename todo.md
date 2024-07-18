@@ -1,0 +1,5 @@
+- Improve error handling
+- Enhance tests (cover more scenarios)
+- Add a Makefile
+- Add more comments
+- Ignore the tests directory in pylint

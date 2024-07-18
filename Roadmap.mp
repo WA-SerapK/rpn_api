@@ -1,0 +1,4 @@
+- Add additional operations (power, square root)
+- Allow saving and loading the operation stack
+- Add a database
+- Implement authentication to secure access to the endpoints
